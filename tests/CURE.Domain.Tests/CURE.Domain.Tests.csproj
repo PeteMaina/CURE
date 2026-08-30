@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Domain tests — no database, no network, no clock dependency.
+
+    Everything here exercises pure business rules: value objects, state
+    machines, the health calculator, SLA arithmetic against business calendars,
+    signal rules, the authorization matrix and money precision. These tests must
+    stay runnable on a laptop with nothing installed (CURE.md 95, 96).
+  -->
+
+  <PropertyGroup>
+    <RootNamespace>CURE.Domain.Tests</RootNamespace>
+    <AssemblyName>CURE.Domain.Tests</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\backend\CURE.Domain\CURE.Domain.csproj" />
+    <ProjectReference Include="..\..\backend\CURE.Application\CURE.Application.csproj" />
+  </ItemGroup>
+
+</Project>

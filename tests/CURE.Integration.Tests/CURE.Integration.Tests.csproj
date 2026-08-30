@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Integration tests — require a real PostgreSQL instance.
+
+    These cover the guarantees that cannot be proven without the database:
+    tenant isolation under Row-Level Security, unique constraints, concurrency
+    conflicts and transactional rollback (CURE.md 98, 171).
+
+    They are written to SKIP with an explicit message when
+    CURE_TEST_POSTGRES_CONNECTION is not set, so `dotnet test` stays green on a
+    bare checkout. A skipped isolation test is reported as skipped — never as a
+    pass. Run `docker compose up -d postgres` and set the variable to execute
+    them for real.
+  -->
+
+  <PropertyGroup>
+    <RootNamespace>CURE.Integration.Tests</RootNamespace>
+    <AssemblyName>CURE.Integration.Tests</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\backend\CURE.Domain\CURE.Domain.csproj" />
+    <ProjectReference Include="..\..\backend\CURE.Application\CURE.Application.csproj" />
+    <ProjectReference Include="..\..\backend\CURE.Infrastructure\CURE.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
