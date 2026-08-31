@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    CURE.Application — use cases and ports.
+
+    Holds commands, queries, application services and the *interfaces* that
+    infrastructure must satisfy (IDbSession, ICacheService, ISearchService,
+    IAuditWriter, ...). It orchestrates; it does not implement transport or
+    persistence.
+
+    The framework reference supplies only the Microsoft.Extensions abstractions
+    (dependency injection, logging, options). Referencing the shared framework
+    rather than a dozen individually versioned Microsoft.Extensions.* packages
+    keeps restore reproducible and removes version-drift risk.
+  -->
+
+  <PropertyGroup>
+    <RootNamespace>CURE.Application</RootNamespace>
+    <AssemblyName>CURE.Application</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CURE.Domain\CURE.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
