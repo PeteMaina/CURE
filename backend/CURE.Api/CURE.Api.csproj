@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    CURE.Api — HTTP delivery.
+
+    Cross-cutting concerns live in
+    ordered middleware: request context, error boundary, security headers, rate
+    limiting, authentication, tenant resolution, idempotency.
+  -->
+
+  <PropertyGroup>
+    <RootNamespace>CURE.Api</RootNamespace>
+    <AssemblyName>CURE.Api</AssemblyName>
+    <UserSecretsId>cure-api-local-development</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- OpenAPI document + explorer UI  -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CURE.Application\CURE.Application.csproj" />
+    <ProjectReference Include="..\CURE.Infrastructure\CURE.Infrastructure.csproj" />
+    <ProjectReference Include="..\CURE.Domain\CURE.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
