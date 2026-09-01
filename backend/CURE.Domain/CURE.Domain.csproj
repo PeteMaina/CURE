@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+     Here we mean business scratch that WE MEAN BUSINESS
+
+    Zero package references and zero framework references, by design. Everything
+    here is expressible in plain C#: entities, value objects, state machines,
+    policies, domain services and domain events.
+
+    Nothing in this project may know about HTTP, SQL, Redis, JSON transport or
+    dependency injection.
+  -->
+
+  <PropertyGroup>
+    <RootNamespace>CURE.Domain</RootNamespace>
+    <AssemblyName>CURE.Domain</AssemblyName>
+  </PropertyGroup>
+
+</Project>
