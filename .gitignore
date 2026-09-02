@@ -1,0 +1,39 @@
+# ---- .NET ----
+bin/
+obj/
+*.user
+*.suo
+artifacts/
+TestResults/
+[Dd]ebug/
+[Rr]elease/
+project.lock.json
+project.assets.json
+
+# ---- Node ----
+node_modules/
+frontend/dist/
+npm-debug.log*
+.npm/
+
+# ---- Secrets ----
+.env
+.env.*
+!.env.example
+*.pfx
+*.key
+appsettings.Production.json
+appsettings.Local.json
+secrets.json
+
+# ---- Local infrastructure state ----
+.docker-data/
+storage/
+
+# ---- Editors / OS ----
+.vs/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db

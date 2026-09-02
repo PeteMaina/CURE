@@ -1,0 +1,49 @@
+<Project>
+
+  <!--
+    Shared build settings for every CURE project.
+
+    Layering rule (CURE.md 158, 237) — dependencies point inward only:
+
+        Api ─┐
+             ├─> Application ─> Domain
+        Worker ┘        ^
+                        │
+             Infrastructure (implements Application ports)
+
+    CURE.Domain intentionally has NO framework reference and NO package
+    references. If a pull request adds one, the domain has started depending on
+    delivery or persistence concerns and the review should reject it.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Deterministic, reviewable builds. -->
+    <Deterministic>true</Deterministic>
+    <NeutralLanguage>en</NeutralLanguage>
+
+    <!--
+      Globalization stays ON. CURE reasons about tenant time zones, business
+      calendars and currency formatting (CURE.md 74, 75, 128), so the invariant
+      globalization mode would silently break SLA arithmetic.
+    -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Product">
+    <Product>CURE</Product>
+    <Company>CURE</Company>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+</Project>
