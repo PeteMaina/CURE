@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    CURE.Worker — durable background processing.
+
+    Hosts the outbox dispatcher and the recurring domain jobs (health
+    recalculation, signal detection, SLA escalation, commitment monitoring,
+    baseline computation, workflow execution, notification delivery).
+
+    It is an Sdk.Web project on purpose: the process exposes only liveness and
+    readiness probes so an orchestrator can tell "process running" apart from
+    "dependencies reachable" (CURE.md 94). No business endpoints are mapped.
+  -->
+
+  <PropertyGroup>
+    <RootNamespace>CURE.Worker</RootNamespace>
+    <AssemblyName>CURE.Worker</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CURE.Application\CURE.Application.csproj" />
+    <ProjectReference Include="..\CURE.Infrastructure\CURE.Infrastructure.csproj" />
+    <ProjectReference Include="..\CURE.Domain\CURE.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
