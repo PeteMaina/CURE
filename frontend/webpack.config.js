@@ -1,7 +1,10 @@
 /*
  * CURE frontend build.
  *
- * This file is a webpack configuration for the CURE frontend. It defines how the frontend code is bundled, optimized, and served during development and production.
+ * Explicit webpack configuration is deliberate (CURE.md 2): Vite is prohibited,
+ * and Create React App is unmaintained. An explicit config keeps the build
+ * understandable to a senior JavaScript developer with no proprietary
+ * abstraction layer in between.
  */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -14,7 +17,8 @@ const DIST = path.resolve(__dirname, 'dist');
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
 
-  
+  // The API base URL is a public value by definition — it ships in the bundle.
+  // No secret may ever be injected here (CURE.md 118).
   const apiBaseUrl = process.env.CURE_API_BASE_URL || '/api/v1';
 
   return {
@@ -33,7 +37,7 @@ module.exports = (env, argv) => {
       clean: true,
     },
     // Real source maps in production so frontend errors remain diagnosable
-    
+    // (CURE.md 146) without shipping original sources inline.
     devtool: isProduction ? 'source-map' : 'eval-cheap-module-source-map',
     resolve: {
       extensions: ['.js', '.jsx'],
@@ -128,7 +132,7 @@ module.exports = (env, argv) => {
     },
     performance: {
       // Budgets are advisory during the build; real numbers come from the
-      // route-level metrics 
+      // route-level metrics described in CURE.md 146.
       hints: isProduction ? 'warning' : false,
       maxEntrypointSize: 900 * 1024,
       maxAssetSize: 900 * 1024,
@@ -136,7 +140,8 @@ module.exports = (env, argv) => {
     stats: 'errors-warnings',
     devServer: {
       port: Number(process.env.PORT || 3000),
-    
+      // Every client route must resolve to the shell so deep links work
+      // (CURE.md 133).
       historyApiFallback: true,
       hot: true,
       client: { overlay: { errors: true, warnings: false } },
