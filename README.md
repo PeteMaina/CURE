@@ -15,3 +15,7 @@ This is for commercial/business-growth.
 A platform where a company can manage:
 
 Lead → Prospect → Opportunity → Customer → Contract → Interaction → Support → Retention
+
+ Contact devpetermaina@gmail.com
+ 
+ https://mainapeter.netlify.app
