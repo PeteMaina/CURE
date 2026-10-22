@@ -25,3 +25,5 @@ public sealed class ApiExceptionFilter(ILogger<ApiExceptionFilter> logger) : IAs
         return Task.CompletedTask;
     }
 }
+
+//Include the AI binded API
