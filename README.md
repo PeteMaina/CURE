@@ -14,10 +14,10 @@ This is for commercial/business-growth.
 
 # The basic idea nailed to perfection
 
-A platform where a company can manage:
+A platform where a company/business can manage:
 
 Lead → Prospect → Opportunity → Customer → Contract → Interaction → Support → Retention
 
  Contact devpetermaina@gmail.com
  
- https://mainapeter.netlify.app
+ Visit https://mainapeter.netlify.app
