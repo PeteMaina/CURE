@@ -1,6 +1,8 @@
 # CURE
 The World Class CRM you need
 
+Still in Development.
+
 
 ## FOR 
 SaaS, banks, telecoms, retail, insurance, consulting, agencies
