@@ -9,7 +9,7 @@
 
     It is an Sdk.Web project on purpose: the process exposes only liveness and
     readiness probes so an orchestrator can tell "process running" apart from
-    "dependencies reachable" (CURE.md 94). No business endpoints are mapped.
+    "dependencies reachable". No business endpoints are mapped.
   -->
 
   <PropertyGroup>
@@ -21,6 +21,10 @@
     <ProjectReference Include="..\CURE.Application\CURE.Application.csproj" />
     <ProjectReference Include="..\CURE.Infrastructure\CURE.Infrastructure.csproj" />
     <ProjectReference Include="..\CURE.Domain\CURE.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>

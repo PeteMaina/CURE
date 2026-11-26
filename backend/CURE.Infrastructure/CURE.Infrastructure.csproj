@@ -7,7 +7,7 @@
     PostgreSQL (Npgsql + Dapper), Redis, password hashing, object storage.
 
     Data access is hand-written SQL rather than an ORM. That is a deliberate
-    choice: CURE.md 90/198/201 require explicit column projections, no SELECT *,
+    choice: explicit column projections, no SELECT *,
     reviewable execution plans and no accidental N+1. Hand-written SQL also
     makes the PostgreSQL Row-Level Security session setup (app.tenant_id)
     explicit at the connection boundary instead of hidden behind an ORM
@@ -24,16 +24,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- PostgreSQL driver — system of record (CURE.md 4). -->
+    <!-- PostgreSQL driver — system of record. -->
     <PackageReference Include="Npgsql" Version="10.0.3" />
     <!-- Thin SQL-to-object mapper. No schema generation, no change tracking. -->
     <PackageReference Include="Dapper" Version="2.1.79" />
-    <!-- Cache, rate-limit counters, idempotency keys (CURE.md 5). -->
+    <!-- Cache, rate-limit counters, idempotency keys. -->
     <PackageReference Include="StackExchange.Redis" Version="3.1.31" />
     <!--
       PasswordHasher<T>: PBKDF2-HMAC-SHA256 with a per-password salt and
       versioned format. Established, reviewed, and it means CURE never
-      implements its own cryptography (CURE.md 31).
+      implements its own cryptography.
     -->
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="10.0.11" />
   </ItemGroup>
