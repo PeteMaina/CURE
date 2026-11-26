@@ -1,3 +1,7 @@
+# ---- Product Playbook / Specs ----
+[Cc][Uu][Rr][Ee].[Mm][Dd]
+*.md.secret
+
 # ---- .NET ----
 bin/
 obj/

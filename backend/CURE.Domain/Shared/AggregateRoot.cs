@@ -3,14 +3,11 @@ namespace CURE.Domain.Shared;
 /// <summary>
 /// Base class for every tenant-owned aggregate root.
 ///
-/// Provides the record shape, identity, tenant,
 /// created/updated attribution and a concurrency version — plus domain-event
 /// collection.
 ///
-///  The aggregate never increments its own
 /// version, which keeps a single writer of that value and makes lost updates
 /// impossible to introduce by accident.
-
 public abstract class AggregateRoot : IEmitsDomainEvents
 {
     private readonly List<DomainEvent> _domainEvents = new();
@@ -69,7 +66,6 @@ public abstract class AggregateRoot : IEmitsDomainEvents
 
     /// <summary>
     /// Guards against operating on an aggregate belonging to a different tenant.
-    
     public void AssertBelongsToTenant(Guid tenantId)
     {
         if (TenantId != tenantId)

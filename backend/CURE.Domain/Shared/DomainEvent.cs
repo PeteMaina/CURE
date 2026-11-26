@@ -1,7 +1,6 @@
 namespace CURE.Domain.Shared;
 
 /// <summary>
-/// A fact that has already happened, in the past tense 
 public abstract record DomainEvent
 {
     protected DomainEvent(Guid tenantId, DateTimeOffset occurredAt)
@@ -30,7 +29,6 @@ public abstract record DomainEvent
     /// <summary>
     /// The customer this fact ultimately concerns, when one applies. Drives
     /// Customer 360 timeline placement without every consumer re-deriving it.
-   
     public virtual Guid? CustomerId => null;
 
     /// <summary>Qualified name written to the outbox, e.g. <c>CustomerCreated.v1</c>.</summary>
@@ -39,7 +37,6 @@ public abstract record DomainEvent
 
 /// <summary>
 /// Implemented by aggregates that accumulate events during a transaction.
-
 public interface IEmitsDomainEvents
 {
     IReadOnlyList<DomainEvent> DomainEvents { get; }

@@ -1,7 +1,6 @@
 namespace CURE.Domain.Shared;
 
 /// <summary>
-/// A half-open interval of instants: [Start, End).
 ///
 /// Half-open is the right default for reporting periods — adjacent ranges tile
 /// without double-counting the boundary instant, so a deal closing exactly at

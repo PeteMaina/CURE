@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-     Here we mean business scratch that WE MEAN BUSINESS
+    CURE.Domain — business truth.
+         Here we mean business scratch that, WE MEAN BUSINESS
+
 
     Zero package references and zero framework references, by design. Everything
     here is expressible in plain C#: entities, value objects, state machines,

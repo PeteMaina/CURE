@@ -2,14 +2,12 @@ using CURE.Domain.Shared;
 
 namespace CURE.Domain.Intelligence;
 
-/// Risk thresholds the calculator consults. Supplied from tenant configuration.</summary>
 public sealed record HealthRiskPolicy(Percentage ConcentrationThreshold, int RenewalHorizonDays)
 {
     public static HealthRiskPolicy Default { get; } =
         new(Percentage.From(70m), 90);
 }
 
-/// One dimension's contribution, shown on the customer Health tab.</summary>
 public sealed record HealthDimensionScore(
     HealthDimension Dimension,
     decimal Score,
@@ -18,7 +16,6 @@ public sealed record HealthDimensionScore(
     decimal WeightShare,
     decimal Contribution);
 
-/// The complete, reconcilable result of a health calculation.</summary>
 public sealed record HealthAssessment(
     decimal Score,
     HealthBand Band,
@@ -30,7 +27,6 @@ public sealed record HealthAssessment(
     /// 
     /// The neutral starting point plus every factor equals the score. The UI
     /// relies on this to render an explanation that adds up.
-    /// </summary>
     public bool Reconciles =>
         Math.Abs(
             CustomerHealthCalculator.NeutralBaseline
@@ -58,24 +54,19 @@ public sealed record HealthAssessment(
 /// The scale is anchored at <see cref="NeutralBaseline"/> rather than zero so
 /// that "we know nothing about this customer" scores 50, not 0. A brand-new
 /// customer is not unhealthy; it is unmeasured.
-/// </summary>
 public static class CustomerHealthCalculator
 {
     /// 
     /// Bump when the formula changes. Stored on every snapshot so a score from
     /// six months ago can still be interpreted (, 150).
-    /// </summary>
     public const int CalculationVersion = 1;
 
     public const decimal NeutralBaseline = 50m;
 
-    /// Assumed interaction gap when a customer has no baseline yet.</summary>
     private const decimal AssumedGapDaysWithoutBaseline = 14m;
 
-    /// Assumed monthly interaction count when a customer has no baseline yet.</summary>
     private const decimal AssumedInteractionsPer30DaysWithoutBaseline = 2m;
 
-    /// Commitment-completion rate treated as "meeting expectations".</summary>
     private const decimal ExpectedCommitmentCompletionRate = 0.8m;
 
     public static HealthAssessment Calculate(
@@ -161,7 +152,6 @@ public static class CustomerHealthCalculator
     /// 
     /// Recency and frequency, each measured against this customer's own history
     /// rather than a global rule (, 183).
-    /// </summary>
     private static DimensionResult ScoreEngagement(HealthInputs inputs)
     {
         if (inputs.DaysSinceLastInteraction is null)
@@ -423,7 +413,6 @@ public static class CustomerHealthCalculator
     ///
     /// These are kept separate and additive so they are individually visible in
     /// the explanation, and so removing a risk visibly restores the points.
-    /// </summary>
     private static IEnumerable<HealthFactor> RiskAdjustments(HealthInputs inputs, HealthRiskPolicy policy)
     {
         if (inputs.TopContactInteractionShare is { } share

@@ -10,7 +10,6 @@ public enum TenantStatus
 }
 
 /// A customer organisation using CURE.
-
 public sealed class Tenant
 {
     private Tenant(
@@ -49,14 +48,13 @@ public sealed class Tenant
     /// <summary>
     /// Reporting currency. Individual records still carry their own currency;
     /// this is the default for new records and the roll-up currency for
-    /// tenant-wide financial summaries 
     public CurrencyCode DefaultCurrency { get; private set; }
 
     public string DefaultTimeZoneId { get; private set; }
 
     /// <summary>
     /// International dialling prefix used to promote locally formatted phone
-    /// numbers, and to phrase phone validation messages (CURE.md 53).
+    /// numbers, and to phrase phone validation messages.
     /// </summary>
     public string DefaultDiallingCode { get; private set; }
 

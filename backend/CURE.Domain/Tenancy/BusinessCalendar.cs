@@ -23,11 +23,9 @@ public sealed record WorkingWindow(DayOfWeek Day, TimeOnly Start, TimeOnly End)
 public sealed record Holiday(DateOnly Date, string Name);
 
 /// <summary>
-/// A tenant's working calendar: time zone, working days, working
 /// hours and holidays.
 ///
 /// This type exists so that no part of CURE ever computes a deadline as
-/// <c>DateTime.Now + X hours</c> . A support
 /// promise of "4 business hours" made at 16:00 on the Friday before a public
 /// holiday is due mid-morning on Tuesday, and this class is the only place that
 /// knows how to work that out.
@@ -40,11 +38,9 @@ public sealed record Holiday(DateOnly Date, string Name);
 public sealed class BusinessCalendar
 {
     /// <summary>
-    ///  A "24x7" calendar resolves in one or
     /// two iterations; a sparse calendar (one 2-hour window per week) still
     /// resolves well inside this. Hitting the bound means the calendar is
     /// unsatisfiable, which is reported rather than looping forever.
-    
     private const int MaxDaysToScan = 4000;
 
     private readonly Dictionary<DayOfWeek, List<WorkingWindow>> _windowsByDay;
@@ -105,7 +101,6 @@ public sealed class BusinessCalendar
         {
             list.Sort((left, right) => left.Start.CompareTo(right.Start));
 
-            
             for (var index = 1; index < list.Count; index++)
             {
                 if (list[index].Start < list[index - 1].End)
@@ -158,7 +153,6 @@ public sealed class BusinessCalendar
         return WindowsOn(date).Any(window => time >= window.Start && time < window.End);
     }
 
- 
     public DateTimeOffset NextWorkingInstant(DateTimeOffset instant)
     {
         var local = ToLocal(instant);
@@ -186,10 +180,8 @@ public sealed class BusinessCalendar
     }
 
     /// <summary>
-   
     /// This is the primitive behind every SLA deadline. Time outside working
     /// windows, and whole holidays, are skipped rather than consumed.
-    
     public DateTimeOffset AddWorkingTime(DateTimeOffset start, TimeSpan workingDuration)
     {
         if (workingDuration < TimeSpan.Zero)
@@ -238,7 +230,6 @@ public sealed class BusinessCalendar
 
     /// <summary>
     /// Working time elapsed between two instants. Used to measure actual response
-    /// and resolution time against a promise 
     public TimeSpan WorkingTimeBetween(DateTimeOffset from, DateTimeOffset to)
     {
         if (to <= from)
@@ -298,7 +289,6 @@ public sealed class BusinessCalendar
     private DateTime ToLocal(DateTimeOffset instant)
         => TimeZoneInfo.ConvertTime(instant, TimeZone).DateTime;
 
-    
     private DateTimeOffset ToInstant(DateOnly date, TimeOnly time)
     {
         var local = date.ToDateTime(time, DateTimeKind.Unspecified);

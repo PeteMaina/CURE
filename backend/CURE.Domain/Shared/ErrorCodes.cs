@@ -1,10 +1,7 @@
 namespace CURE.Domain.Shared;
 
 /// <summary>
-/// Stable, machine-readable business error codes 
 ///
-/// The frontend branches on these codes and never on message text. These are to be edited later though
-
 public static class ErrorCodes
 {
     // ---- Generic ----------------------------------------------------------

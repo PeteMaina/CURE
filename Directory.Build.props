@@ -3,7 +3,7 @@
   <!--
     Shared build settings for every CURE project.
 
-    Layering rule (CURE.md 158, 237) — dependencies point inward only:
+    Layering rule — dependencies point inward only:
 
         Api ─┐
              ├─> Application ─> Domain
@@ -28,7 +28,7 @@
 
     <!--
       Globalization stays ON. CURE reasons about tenant time zones, business
-      calendars and currency formatting (CURE.md 74, 75, 128), so the invariant
+      calendars and currency formatting, so the invariant
       globalization mode would silently break SLA arithmetic.
     -->
     <InvariantGlobalization>false</InvariantGlobalization>

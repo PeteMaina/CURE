@@ -2,7 +2,6 @@ using CURE.Domain.Shared;
 
 namespace CURE.Domain.Intelligence;
 
-/// The explainable dimensions of relationship health (CURE.md 15).
 public enum HealthDimension
 {
     Engagement = 0,
@@ -98,7 +97,6 @@ public sealed record HealthWeights
     /// 
     /// Identifies the weighting used for a given snapshot, so a score computed
     /// last month can be understood even after an administrator retunes the
-    /// weights (CURE.md 12, 140).
     /// 
     public string Fingerprint =>
         $"{Engagement:0.##}/{Revenue:0.##}/{Support:0.##}/{Relationship:0.##}/{Payment:0.##}/{Momentum:0.##}";

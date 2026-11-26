@@ -3,10 +3,8 @@ using System.Text.RegularExpressions;
 
 namespace CURE.Domain.Shared;
 
-/// A human-readable record reference such as CUS-000042
 ///
 /// These are display and support aids, unique per tenant. They are NOT the
-/// public API identifier
 public readonly partial record struct EntityNumber
 {
     [GeneratedRegex(@"^[A-Z]{2,4}-\d{6,}$", RegexOptions.CultureInvariant)]
@@ -34,7 +32,6 @@ public readonly partial record struct EntityNumber
     /// Formats an allocated sequence value. Six digits is the minimum width;
     /// beyond a million records the number simply grows rather than wrapping or
     /// colliding.
-    
     public static EntityNumber Format(string prefix, long sequenceValue)
     {
         if (string.IsNullOrWhiteSpace(prefix))
@@ -58,9 +55,7 @@ public readonly partial record struct EntityNumber
     public override string ToString() => Value;
 }
 
-
 /// The registered reference prefixes. Centralized so a new entity type cannot
-/// quietly reuse an existing prefix 
 public static class NumberPrefixes
 {
     public const string Customer = "CUS";

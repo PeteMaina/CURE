@@ -9,7 +9,6 @@ namespace CURE.Domain.Shared;
 /// A default country dialling code is required at parse time so that a locally
 /// formatted number ("0712 345 678") can be normalized without the domain
 /// guessing a country. Error messages name the expected format for the tenant's
-/// region rather than saying "Invalid input" 
 /// </summary>
 public readonly partial record struct PhoneNumber
 {
@@ -21,7 +20,6 @@ public readonly partial record struct PhoneNumber
     private PhoneNumber(string value) => Value = value;
 
     /// Parses a number that is already in international form.
-    /// 
     public static PhoneNumber From(string? value)
     {
         var candidate = Strip(value);
@@ -49,7 +47,6 @@ public readonly partial record struct PhoneNumber
     /// Example: <c>FromLocal("0712345678", "+254")</c> yields
     /// <c>+254712345678</c>, and the error message for a bad value names that
     /// expected shape — "Enter a valid phone number beginning with +254"
-    /// 
     /// </summary>
     public static PhoneNumber FromLocal(string? value, string defaultDiallingCode)
     {
@@ -102,7 +99,6 @@ public readonly partial record struct PhoneNumber
         => string.IsNullOrWhiteSpace(value) ? null : FromLocal(value, defaultDiallingCode);
 
     /// <summary>
-    /// Digits only, for duplicate matching . Formatting differences
     /// between "+254 712 345 678" and "+254712345678" must not hide a duplicate.
     /// </summary>
     public string Normalized => new(Value.Where(char.IsAsciiDigit).ToArray());

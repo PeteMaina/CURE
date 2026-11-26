@@ -3,7 +3,6 @@ namespace CURE.Domain.Shared;
 /// <summary>
 /// A rejected business operation.
 ///
-/// Carries a stable ErrorCodes so the API
 /// can map it to an HTTP status and the frontend can branch deterministically
 
 public class DomainException : Exception
@@ -33,7 +32,6 @@ public class DomainException : Exception
         });
 }
 
-
 public sealed class ConcurrencyException : DomainException
 {
     public int ExpectedVersion { get; }
@@ -58,7 +56,6 @@ public sealed class ConcurrencyException : DomainException
 
 /// <summary>
 /// Raised when the caller is authenticated but not permitted.
-
 public sealed class PermissionDeniedException : DomainException
 {
     public PermissionDeniedException(string? requiredPermission = null)

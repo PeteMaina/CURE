@@ -1,7 +1,7 @@
 namespace CURE.Domain.Shared;
 
 /// <summary>
-/// Sensitivity of a record (CURE.md 33).
+/// Sensitivity of a record.
 ///
 /// Classification is not decoration: it feeds visibility, export eligibility,
 /// audit depth, sharing and retention. A RESTRICTED customer is not merely
@@ -28,17 +28,14 @@ public enum DataClassification
 public static class DataClassificationRules
 {
     /// Whether merely reading the record is itself an auditable event
-    /// (CUSTOMER_VIEWED_SENSITIVE ).
-    
     public static bool ReadIsAuditable(this DataClassification classification)
         => classification >= DataClassification.Confidential;
 
-    /// <summary>Whether exporting requires an approval decision (CURE.md 78).</summary>
+    /// <summary>Whether exporting requires an approval decision.</summary>
     public static bool ExportRequiresApproval(this DataClassification classification)
         => classification >= DataClassification.Restricted;
 
     /// Whether the record may leave the system boundary for external model
-    /// processing . Restricted data never does.
     public static bool MayBeSentToExternalModel(this DataClassification classification)
         => classification <= DataClassification.Confidential;
 }

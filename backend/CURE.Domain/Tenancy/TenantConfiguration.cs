@@ -5,7 +5,6 @@ using CURE.Domain.Shared;
 namespace CURE.Domain.Tenancy;
 
 /// Per-tenant policy values.
-
 public sealed class TenantConfiguration
 {
     public static class Keys
@@ -62,7 +61,6 @@ public sealed class TenantConfiguration
     // ---- Customer health --------------------------------------------------
 
     /// <summary>
-    /// Health dimension weights 
     public HealthWeights HealthWeights => HealthWeights.Create(
         engagement: Decimal(Keys.HealthWeightEngagement, 25m),
         revenue: Decimal(Keys.HealthWeightRevenue, 20m),
@@ -71,7 +69,7 @@ public sealed class TenantConfiguration
         payment: Decimal(Keys.HealthWeightPayment, 10m),
         momentum: Decimal(Keys.HealthWeightMomentum, 10m));
 
-    
+
     public decimal SilenceDeviationFactor => Decimal(Keys.SignalSilenceDeviationFactor, 2.5m);
 
     public int SilenceMinimumDays => Integer(Keys.SignalSilenceMinimumDays, 14);
@@ -84,20 +82,17 @@ public sealed class TenantConfiguration
 
     /// <summary>
     /// Share of commercial interaction concentrated on one contact before
-    /// relationship-continuity risk is raised 
     public Percentage ConcentrationThreshold
         => Percentage.From(Decimal(Keys.SignalConcentrationThreshold, 70m));
 
     public int BaselineMinimumInteractions => Integer(Keys.BaselineMinimumInteractions, 5);
 
 
-    /// <summary>Similarity at or above which the user is asked to review before creating.
     public Percentage DuplicateReviewThreshold
         => Percentage.From(Decimal(Keys.DuplicateReviewThreshold, 70m));
 
     /// <summary>
     /// Similarity at or above which creation is blocked pending an explicit
-    /// decision. 
     public Percentage DuplicateBlockThreshold
         => Percentage.From(Decimal(Keys.DuplicateBlockThreshold, 92m));
 
@@ -115,21 +110,18 @@ public sealed class TenantConfiguration
 
     /// <summary>
     /// How recently the user must have authenticated to perform a sensitive
-    
     public TimeSpan SensitiveActionReauthWindow
         => TimeSpan.FromMinutes(Integer(Keys.SensitiveActionReauthMinutes, 15));
 
 
-    /// <summary>Discount percentage above which an approval is required </summary>
     public Percentage DiscountApprovalThreshold
         => Percentage.From(Decimal(Keys.DiscountApprovalPercent, 20m));
 
     /// <summary>Deal size above which executive approval is required.</summary>
     public decimal ExecutiveApprovalAmount => Decimal(Keys.ExecutiveApprovalAmount, 1_000_000m);
 
-   
+
     /// Whether this tenant permits data to be sent to an external model
-    
     public bool AiProcessingEnabled => Boolean(Keys.AiProcessingEnabled, false);
 
     // ---- Accessors --------------------------------------------------------
