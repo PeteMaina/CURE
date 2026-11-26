@@ -5,13 +5,14 @@
 
     These cover the guarantees that cannot be proven without the database:
     tenant isolation under Row-Level Security, unique constraints, concurrency
-    conflicts and transactional rollback (CURE.md 98, 171).
+    conflicts and transactional rollback.
 
-    They are written to SKIP with an explicit message when
-    CURE_TEST_POSTGRES_CONNECTION is not set, so `dotnet test` stays green on a
-    bare checkout. A skipped isolation test is reported as skipped — never as a
-    pass. Run `docker compose up -d postgres` and set the variable to execute
-    them for real.
+    They are written to SKIP with an explicit message unless both
+    CURE_TEST_POSTGRES_ADMIN_CONNECTION and CURE_TEST_POSTGRES_APP_CONNECTION
+    are set, so `dotnet test` stays green on a bare checkout. A skipped
+    isolation test is reported as skipped — never as a pass. Run
+    `docker compose up -d postgres`, initialize the schema through the API, and
+    provide separate migration/admin and restricted runtime connection strings.
   -->
 
   <PropertyGroup>

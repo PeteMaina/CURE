@@ -11,9 +11,18 @@ namespace CURE.Api.Controllers;
 public sealed class CustomersController(ICustomerService customers, IRequestContextAccessor requestContext) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> List([FromQuery] string? search, [FromQuery] int page = 1, [FromQuery] int pageSize = 25, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> List(
+        [FromQuery] string? search,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        [FromQuery] string? type = null,
+        [FromQuery] string? industry = null,
+        CancellationToken cancellationToken = default)
     {
-        var result = await customers.ListAsync(requestContext.Current.TenantId, new CustomerListQuery(search, page, pageSize), cancellationToken);
+        var result = await customers.ListAsync(
+            requestContext.Current.TenantId,
+            new CustomerListQuery(search, page, pageSize, type, industry),
+            cancellationToken);
         return Ok(new { data = result.Data, meta = new { page = result.Page, pageSize = result.PageSize, total = result.Total } });
     }
 
@@ -21,6 +30,7 @@ public sealed class CustomersController(ICustomerService customers, IRequestCont
     public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken)
         => Ok(new { data = await customers.GetAsync(requestContext.Current.TenantId, id, cancellationToken) });
 
+    [Authorize(Policy = "CustomerWrite")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCustomerCommand command, CancellationToken cancellationToken)
     {
@@ -29,6 +39,7 @@ public sealed class CustomersController(ICustomerService customers, IRequestCont
         return CreatedAtAction(nameof(Get), new { id = created.Id }, new { data = created });
     }
 
+    [Authorize(Policy = "CustomerWrite")]
     [HttpPatch("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCustomerRequest request, CancellationToken cancellationToken)
     {
@@ -38,6 +49,7 @@ public sealed class CustomersController(ICustomerService customers, IRequestCont
         return Ok(new { data = updated });
     }
 
+    [Authorize(Policy = "CustomerWrite")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {

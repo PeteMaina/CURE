@@ -27,4 +27,8 @@
     <ProjectReference Include="..\CURE.Domain\CURE.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.79" />
+  </ItemGroup>
+
 </Project>

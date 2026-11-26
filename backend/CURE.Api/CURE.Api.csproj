@@ -3,7 +3,8 @@
   <!--
     CURE.Api — HTTP delivery.
 
-    Cross-cutting concerns live in
+    Controllers translate HTTP into application commands and queries. They
+    contain no business algorithms. Cross-cutting concerns live in
     ordered middleware: request context, error boundary, security headers, rate
     limiting, authentication, tenant resolution, idempotency.
   -->
@@ -15,8 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- OpenAPI document + explorer UI  -->
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.11" />
   </ItemGroup>
 
   <ItemGroup>

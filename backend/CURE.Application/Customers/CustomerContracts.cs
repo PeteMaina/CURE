@@ -1,6 +1,6 @@
 namespace CURE.Application.Customers;
 
-public sealed record CustomerListQuery(string? Search, int Page, int PageSize);
+public sealed record CustomerListQuery(string? Search, int Page, int PageSize, string? Type = null, string? Industry = null);
 
 public sealed record CustomerListItem(
     Guid Id,

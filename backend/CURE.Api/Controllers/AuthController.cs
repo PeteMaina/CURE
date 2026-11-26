@@ -21,6 +21,7 @@ public sealed class AuthController(IConfiguration configuration, IWebHostEnviron
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, "00000000-0000-0000-0000-000000000002"),
+            new Claim("user_id", "00000000-0000-0000-0000-000000000002"),
             new Claim("tenant_id", "00000000-0000-0000-0000-000000000001"),
             new Claim(ClaimTypes.Role, "Administrator"),
         };

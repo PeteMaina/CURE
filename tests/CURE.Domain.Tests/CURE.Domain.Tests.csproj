@@ -6,7 +6,7 @@
     Everything here exercises pure business rules: value objects, state
     machines, the health calculator, SLA arithmetic against business calendars,
     signal rules, the authorization matrix and money precision. These tests must
-    stay runnable on a laptop with nothing installed (CURE.md 95, 96).
+    stay runnable on a laptop with nothing installed.
   -->
 
   <PropertyGroup>
