@@ -1,7 +1,7 @@
 /*
  * CURE frontend build.
  *
- * Explicit webpack configuration is deliberate (CURE.md 2): Vite is prohibited,
+ * Explicit webpack configuration is deliberate: Vite is avoided,
  * and Create React App is unmaintained. An explicit config keeps the build
  * understandable to a senior JavaScript developer with no proprietary
  * abstraction layer in between.
@@ -18,7 +18,7 @@ module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
 
   // The API base URL is a public value by definition — it ships in the bundle.
-  // No secret may ever be injected here (CURE.md 118).
+  // No secret may ever be injected here.
   const apiBaseUrl = process.env.CURE_API_BASE_URL || '/api/v1';
 
   return {
@@ -37,7 +37,7 @@ module.exports = (env, argv) => {
       clean: true,
     },
     // Real source maps in production so frontend errors remain diagnosable
-    // (CURE.md 146) without shipping original sources inline.
+    // without shipping original sources inline.
     devtool: isProduction ? 'source-map' : 'eval-cheap-module-source-map',
     resolve: {
       extensions: ['.js', '.jsx'],
@@ -98,6 +98,11 @@ module.exports = (env, argv) => {
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development'),
         'process.env.CURE_API_BASE_URL': JSON.stringify(apiBaseUrl),
+        'process.env.CURE_DEV_TENANT_ID': JSON.stringify(process.env.CURE_DEV_TENANT_ID || '00000000-0000-0000-0000-000000000001'),
+        'process.env.CURE_DEV_USER_ID': JSON.stringify(process.env.CURE_DEV_USER_ID || '00000000-0000-0000-0000-000000000002'),
+        'process.env.CURE_OIDC_AUTHORITY': JSON.stringify(process.env.CURE_OIDC_AUTHORITY || ''),
+        'process.env.CURE_OIDC_CLIENT_ID': JSON.stringify(process.env.CURE_OIDC_CLIENT_ID || ''),
+        'process.env.CURE_OIDC_SCOPE': JSON.stringify(process.env.CURE_OIDC_SCOPE || 'openid profile email cure-api'),
       }),
       ...(isProduction
         ? [
@@ -132,7 +137,7 @@ module.exports = (env, argv) => {
     },
     performance: {
       // Budgets are advisory during the build; real numbers come from the
-      // route-level metrics described in CURE.md 146.
+      // route-level metrics.
       hints: isProduction ? 'warning' : false,
       maxEntrypointSize: 900 * 1024,
       maxAssetSize: 900 * 1024,
@@ -140,8 +145,7 @@ module.exports = (env, argv) => {
     stats: 'errors-warnings',
     devServer: {
       port: Number(process.env.PORT || 3000),
-      // Every client route must resolve to the shell so deep links work
-      // (CURE.md 133).
+      // Every client route must resolve to the shell so deep links work.
       historyApiFallback: true,
       hot: true,
       client: { overlay: { errors: true, warnings: false } },
