@@ -61,3 +61,11 @@ public interface IPipelineStore
     Task<OpportunityDto> TransitionStageAsync(Guid tenantId, Guid actorId, string requestId, Guid opportunityId, TransitionStageCommand command, CancellationToken ct);
     Task<ConvertedLeadResultDto> ConvertLeadAtomicAsync(Guid tenantId, Guid actorId, string requestId, Guid leadId, ConvertLeadCommand command, CancellationToken ct);
 }
+
+public interface IPipelineService
+{
+    Task<PipelineSummaryDto> GetPipelineSummaryAsync(Guid tenantId, CancellationToken ct);
+    Task<IReadOnlyList<OpportunityStageHistoryDto>> GetStageHistoryAsync(Guid tenantId, Guid opportunityId, CancellationToken ct);
+    Task<OpportunityDto> TransitionStageAsync(Guid tenantId, Guid actorId, string requestId, Guid opportunityId, TransitionStageCommand command, CancellationToken ct);
+    Task<ConvertedLeadResultDto> ConvertLeadAsync(Guid tenantId, Guid actorId, string requestId, Guid leadId, ConvertLeadCommand command, CancellationToken ct);
+}
