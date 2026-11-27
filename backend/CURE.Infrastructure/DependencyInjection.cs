@@ -1,5 +1,6 @@
 using CURE.Application.Customers;
 using CURE.Application.CoreCrm;
+using CURE.Application.Pipeline;
 using CURE.Application.Workspace;
 using CURE.Infrastructure.Persistence;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,7 @@ public static class DependencyInjection
         services.AddSingleton<PostgresConnectionFactory>();
         services.AddScoped<ICustomerStore, PostgresCustomerStore>();
         services.AddScoped<ICoreCrmStore, PostgresCoreCrmStore>();
+        services.AddScoped<IPipelineStore, PostgresPipelineStore>();
         services.AddScoped<IWorkspaceStore, PostgresWorkspaceStore>();
         services.AddHostedService<DatabaseInitializer>();
         return services;

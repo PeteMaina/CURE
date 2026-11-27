@@ -65,6 +65,23 @@ public sealed class DatabaseInitializer(
                     cancellationToken: cancellationToken));
             }
 
+            var pipelineApplied = await connection.QuerySingleOrDefaultAsync<int?>(
+                new Dapper.CommandDefinition(
+                    "SELECT version FROM cure_schema_migrations WHERE version = 3;",
+                    transaction: transaction,
+                    cancellationToken: cancellationToken));
+            if (pipelineApplied is null)
+            {
+                await connection.ExecuteAsync(new Dapper.CommandDefinition(
+                    Schema.PipelineEvolutionSql,
+                    transaction: transaction,
+                    cancellationToken: cancellationToken));
+                await connection.ExecuteAsync(new Dapper.CommandDefinition(
+                    "INSERT INTO cure_schema_migrations (version) VALUES (3);",
+                    transaction: transaction,
+                    cancellationToken: cancellationToken));
+            }
+
             var grants = await connection.QuerySingleAsync<string>(new Dapper.CommandDefinition(
                 """
                 SELECT format(
@@ -299,5 +316,44 @@ internal static class Schema
         ALTER TABLE saved_views FORCE ROW LEVEL SECURITY;
         ALTER TABLE customer_contact_links FORCE ROW LEVEL SECURITY;
         ALTER TABLE notification_states FORCE ROW LEVEL SECURITY;
+        """;
+
+    public const string PipelineEvolutionSql = """
+        CREATE TABLE IF NOT EXISTS opportunity_stage_history (
+            id uuid PRIMARY KEY,
+            tenant_id uuid NOT NULL REFERENCES tenants(id),
+            opportunity_id uuid NOT NULL REFERENCES opportunities(id) ON DELETE CASCADE,
+            from_stage text NULL,
+            to_stage text NOT NULL,
+            amount numeric(18,2) NOT NULL,
+            currency char(3) NOT NULL,
+            probability integer NOT NULL,
+            weighted_amount numeric(18,2) NOT NULL,
+            days_in_prior_stage integer NULL,
+            changed_at timestamptz NOT NULL DEFAULT now(),
+            changed_by uuid NOT NULL,
+            close_reason text NULL,
+            notes text NULL
+        );
+
+        CREATE INDEX IF NOT EXISTS ix_stage_hist_tenant_opp ON opportunity_stage_history (tenant_id, opportunity_id, changed_at DESC);
+        CREATE INDEX IF NOT EXISTS ix_stage_hist_tenant_stage ON opportunity_stage_history (tenant_id, to_stage, changed_at DESC);
+
+        ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS stage_entered_at timestamptz NOT NULL DEFAULT now();
+        ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS close_reason text NULL;
+        ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS competitor_name text NULL;
+        ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS close_notes text NULL;
+        ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS closed_at timestamptz NULL;
+
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS converted_customer_id uuid NULL REFERENCES customers(id);
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS converted_contact_id uuid NULL REFERENCES contacts(id);
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS converted_opportunity_id uuid NULL REFERENCES opportunities(id);
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS converted_at timestamptz NULL;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS disqualification_reason text NULL;
+
+        ALTER TABLE opportunity_stage_history ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE opportunity_stage_history FORCE ROW LEVEL SECURITY;
+        DROP POLICY IF EXISTS tenant_isolation_stage_hist ON opportunity_stage_history;
+        CREATE POLICY tenant_isolation_stage_hist ON opportunity_stage_history USING (tenant_id::text = current_setting('app.tenant_id', true));
         """;
 }
