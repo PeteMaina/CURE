@@ -92,3 +92,18 @@ export const coreApi = {
   update: (resource, id, payload, version) => request(`/${resource}/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'If-Match': String(version) }, body: JSON.stringify(payload) }),
   delete: (resource, id) => request(`/${resource}/${id}`, { method: 'DELETE' }),
 };
+
+export const pipelineApi = {
+  summary: () => request('/pipeline/summary'),
+  history: (opportunityId) => request(`/opportunities/${opportunityId}/history`),
+  transition: (opportunityId, payload) => request(`/opportunities/${opportunityId}/transition`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  }),
+  convertLead: (leadId, payload) => request(`/leads/${leadId}/convert`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  }),
+};

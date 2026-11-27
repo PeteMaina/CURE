@@ -29,6 +29,7 @@ const primaryNavigation = [
   { label: "Contacts", to: "/contacts", icon: GroupsOutlined },
   { label: "Leads", to: "/leads", icon: GroupsOutlined },
   { label: "Opportunities", to: "/opportunities", icon: InsightsOutlined },
+  { label: "Pipeline", to: "/pipeline", icon: InsightsOutlined },
   { label: "Activities", to: "/activities", icon: AssignmentOutlined },
   { label: "Cases", to: "/cases", icon: SupportAgentOutlined },
 ];

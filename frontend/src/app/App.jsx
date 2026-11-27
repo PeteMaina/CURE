@@ -6,6 +6,7 @@ import CustomerDetailPage from '../features/customers/CustomerDetailPage';
 import HomePage from '../features/home/HomePage';
 import InboxPage from '../features/inbox/InboxPage';
 import CoreResourcePage from '../features/core/CoreResourcePage';
+import PipelineBoardPage from '../features/pipeline/PipelineBoardPage';
 import LoginPage from '../features/auth/LoginPage';
 import OidcCallbackPage from '../features/auth/OidcCallbackPage';
 import { oidcManager } from '../services/oidc';
@@ -53,6 +54,7 @@ export default function App() {
         <Route path="/contacts" element={<CoreResourcePage resource="contacts" />} />
         <Route path="/leads" element={<CoreResourcePage resource="leads" />} />
         <Route path="/opportunities" element={<CoreResourcePage resource="opportunities" />} />
+        <Route path="/pipeline" element={<PipelineBoardPage />} />
         <Route path="/activities" element={<CoreResourcePage resource="activities" />} />
         <Route path="/cases" element={<CoreResourcePage resource="cases" />} />
         <Route path="/saved-views" element={<CoreResourcePage resource="saved-views" />} />
