@@ -1,5 +1,6 @@
 using CURE.Application.Customers;
 using CURE.Application.CoreCrm;
+using CURE.Application.Engagement;
 using CURE.Application.Pipeline;
 using CURE.Application.Workspace;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ public static class DependencyInjection
         services.AddScoped<ICoreCrmService, CoreCrmService>();
         services.AddScoped<IPipelineService, PipelineService>();
         services.AddScoped<IWorkspaceService, WorkspaceService>();
+        services.AddScoped<IActivityService, ActivityService>();
         return services;
     }
 }

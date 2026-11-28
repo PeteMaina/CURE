@@ -82,6 +82,23 @@ public sealed class DatabaseInitializer(
                     cancellationToken: cancellationToken));
             }
 
+            var engagementApplied = await connection.QuerySingleOrDefaultAsync<int?>(
+                new Dapper.CommandDefinition(
+                    "SELECT version FROM cure_schema_migrations WHERE version = 4;",
+                    transaction: transaction,
+                    cancellationToken: cancellationToken));
+            if (engagementApplied is null)
+            {
+                await connection.ExecuteAsync(new Dapper.CommandDefinition(
+                    Schema.EngagementEvolutionSql,
+                    transaction: transaction,
+                    cancellationToken: cancellationToken));
+                await connection.ExecuteAsync(new Dapper.CommandDefinition(
+                    "INSERT INTO cure_schema_migrations (version) VALUES (4);",
+                    transaction: transaction,
+                    cancellationToken: cancellationToken));
+            }
+
             var grants = await connection.QuerySingleAsync<string>(new Dapper.CommandDefinition(
                 """
                 SELECT format(
@@ -316,6 +333,90 @@ internal static class Schema
         ALTER TABLE saved_views FORCE ROW LEVEL SECURITY;
         ALTER TABLE customer_contact_links FORCE ROW LEVEL SECURITY;
         ALTER TABLE notification_states FORCE ROW LEVEL SECURITY;
+        """;
+
+    public const string EngagementEvolutionSql = """
+        -- Enrich activities table with full engagement columns
+        ALTER TABLE activities ADD COLUMN IF NOT EXISTS idempotency_key text NULL;
+        ALTER TABLE activities ADD COLUMN IF NOT EXISTS activity_type text NULL;
+        ALTER TABLE activities ADD COLUMN IF NOT EXISTS notes text NULL;
+        ALTER TABLE activities ADD COLUMN IF NOT EXISTS completed_at timestamptz NULL;
+        ALTER TABLE activities ADD COLUMN IF NOT EXISTS duration_minutes integer NULL;
+        ALTER TABLE activities ADD COLUMN IF NOT EXISTS outcome text NULL;
+        ALTER TABLE activities ADD COLUMN IF NOT EXISTS linked_customer_id uuid NULL;
+        ALTER TABLE activities ADD COLUMN IF NOT EXISTS linked_contact_id uuid NULL;
+        ALTER TABLE activities ADD COLUMN IF NOT EXISTS linked_opportunity_id uuid NULL;
+        ALTER TABLE activities ADD COLUMN IF NOT EXISTS created_by uuid NULL;
+        ALTER TABLE activities ADD COLUMN IF NOT EXISTS updated_by uuid NULL;
+
+        -- Back-fill activity_type from legacy 'type' column so the new column is usable immediately
+        UPDATE activities SET activity_type = type WHERE activity_type IS NULL;
+
+        CREATE UNIQUE INDEX IF NOT EXISTS ux_activities_idempotency ON activities (tenant_id, idempotency_key) WHERE idempotency_key IS NOT NULL;
+        CREATE INDEX IF NOT EXISTS ix_activities_customer_occurred ON activities (tenant_id, linked_customer_id, created_at DESC) WHERE linked_customer_id IS NOT NULL;
+        CREATE INDEX IF NOT EXISTS ix_activities_opportunity ON activities (tenant_id, linked_opportunity_id, created_at DESC) WHERE linked_opportunity_id IS NOT NULL;
+
+        -- audit_events: add domain-event columns used by the new activity store
+        ALTER TABLE audit_events ADD COLUMN IF NOT EXISTS aggregate_type text NULL;
+        ALTER TABLE audit_events ADD COLUMN IF NOT EXISTS aggregate_id uuid NULL;
+        ALTER TABLE audit_events ADD COLUMN IF NOT EXISTS event_type text NULL;
+        ALTER TABLE audit_events ADD COLUMN IF NOT EXISTS customer_id uuid NULL;
+        ALTER TABLE audit_events ADD COLUMN IF NOT EXISTS occurred_at timestamptz NULL;
+        ALTER TABLE audit_events ADD COLUMN IF NOT EXISTS payload jsonb NULL;
+
+        CREATE INDEX IF NOT EXISTS ix_audit_events_customer_occurred ON audit_events (tenant_id, customer_id, occurred_at DESC) WHERE customer_id IS NOT NULL;
+
+        -- Unified customer timeline view (keyset-paginated, newest-first)
+        CREATE OR REPLACE VIEW customer_timeline_view AS
+            SELECT
+                a.id                       AS entry_id,
+                a.tenant_id,
+                a.linked_customer_id       AS customer_id,
+                'Activity'                 AS entry_kind,
+                COALESCE(a.activity_type, a.type) AS event_type,
+                a.subject                  AS summary,
+                a.notes                    AS detail,
+                a.linked_opportunity_id,
+                a.id                       AS linked_activity_id,
+                a.owner_id                 AS actor_id,
+                a.created_at               AS occurred_at
+            FROM activities a
+            WHERE a.linked_customer_id IS NOT NULL
+
+            UNION ALL
+
+            SELECT
+                h.id                       AS entry_id,
+                h.tenant_id,
+                o.customer_id,
+                'OpportunityStageChange'   AS entry_kind,
+                'StageChanged'             AS event_type,
+                ('Stage: ' || COALESCE(h.from_stage, 'New') || ' → ' || h.to_stage) AS summary,
+                h.notes                    AS detail,
+                h.opportunity_id           AS linked_opportunity_id,
+                NULL::uuid                 AS linked_activity_id,
+                h.changed_by               AS actor_id,
+                h.changed_at               AS occurred_at
+            FROM opportunity_stage_history h
+            JOIN opportunities o ON o.id = h.opportunity_id AND o.tenant_id = h.tenant_id
+            WHERE o.customer_id IS NOT NULL
+
+            UNION ALL
+
+            SELECT
+                ae.id                      AS entry_id,
+                ae.tenant_id,
+                ae.customer_id,
+                'AuditEvent'               AS entry_kind,
+                COALESCE(ae.event_type, ae.action) AS event_type,
+                COALESCE(ae.entity_type, ae.aggregate_type, 'System') AS summary,
+                NULL::text                 AS detail,
+                ae.aggregate_id            AS linked_opportunity_id,
+                NULL::uuid                 AS linked_activity_id,
+                ae.actor_id,
+                COALESCE(ae.occurred_at, ae.occurred_at, now()) AS occurred_at
+            FROM audit_events ae
+            WHERE ae.customer_id IS NOT NULL;
         """;
 
     public const string PipelineEvolutionSql = """
