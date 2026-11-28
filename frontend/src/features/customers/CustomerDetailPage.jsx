@@ -13,6 +13,7 @@ import {
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { coreApi, customerApi } from "../../services/api";
 import CustomerForm from "./CustomerForm";
+import ActivityFeedWidget from "../inbox/ActivityFeedWidget";
 
 const tabs = [
   { id: "overview", label: "Overview" },
@@ -175,7 +176,7 @@ export default function CustomerDetailPage() {
         tabIndex={0}
       >
         {activeTab === "overview" && <Overview view={view} customer={customer} />}
-        {activeTab === "timeline" && <Timeline entries={view.timeline} />}
+        {activeTab === "timeline" && <ActivityFeedWidget customerId={customerId} />}
         {activeTab === "contacts" && (
           <Contacts
             contacts={view.contacts}

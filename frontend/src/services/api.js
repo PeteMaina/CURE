@@ -107,3 +107,23 @@ export const pipelineApi = {
     body: JSON.stringify(payload),
   }),
 };
+
+export const activityApi = {
+  log: (payload) => request('/activities', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Idempotency-Key': crypto.randomUUID() },
+    body: JSON.stringify(payload),
+  }),
+  complete: (activityId, outcome) => request(`/activities/${activityId}/complete`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ outcome }),
+  }),
+  cancel: (activityId, reason) => request(`/activities/${activityId}/cancel`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reason }),
+  }),
+  timeline: (customerId, limit = 25, before) =>
+    request(`/customers/${customerId}/timeline?limit=${limit}${before ? `&before=${encodeURIComponent(before)}` : ''}`),
+};
